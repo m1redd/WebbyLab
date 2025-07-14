@@ -1,0 +1,102 @@
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  overflow-x: hidden;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #bb86fc;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+textarea {
+  background-color: #1e1e1e;
+  border: 1.5px solid #333;
+  color: #e0e0e0;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 8px 0 16px 0;
+  width: 100%;
+  font-size: 1rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: #bb86fc;
+  box-shadow: 0 0 8px #bb86fcaa;
+  outline: none;
+}
+
+button {
+  background-color: #3700b3;
+  color: #e0e0e0;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 8px 8px 16px 0;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #6200ee;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  background-color: #1e1e1e;
+  margin-bottom: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px #6200ee;
+}
+
+select {
+  background-color: #1e1e1e;
+  border: 1.5px solid #333;
+  color: #e0e0e0;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 8px 0 16px 0;
+  width: 100%;
+  font-size: 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3csvg width='10' height='7' viewBox='0 0 10 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M1 1L5 5L9 1' stroke='%23e0e0e0' stroke-width='2'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px 7px;
+}
+
+select:focus {
+  border-color: #bb86fc;
+  box-shadow: 0 0 8px #bb86fcaa;
+  outline: none;
+}
