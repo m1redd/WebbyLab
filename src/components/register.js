@@ -10,6 +10,8 @@ const RegisterForm = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
+  const token = localStorage.getItem("token")
+
   const handleRegister = () => {
     dispatch(
       registerUser({
@@ -55,16 +57,10 @@ const RegisterForm = () => {
       <button onClick={handleLogout} style={{ marginLeft: 10 }}>
         Logout
       </button>
-
-      {auth.status === "loading" && <p>Loading...</p>}
-      {auth.status === "succeeded" && <p>Token: {auth.token}</p>}
+      <br/>
+      token in localStorage: {token}
       {auth.status === "failed" && <p>Error: {JSON.stringify(auth.error)}</p>}
-
       <hr />
-      <p>
-        <strong>Token in localStorage:</strong>{" "}
-        {localStorage.getItem("token") || "null"}
-      </p>
     </div>
   );
 };

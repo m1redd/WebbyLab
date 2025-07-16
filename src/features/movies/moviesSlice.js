@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { showNotification } from "../notification/modalNotificationSlice";
 
 const API = process.env.REACT_APP_API_MOVIES;
 
@@ -17,6 +18,19 @@ export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
   return response.data?.data || [];
 });
 
+export const fetchMoviesByActor = createAsyncThunk(
+  "movies/fetchMoviesByActor",
+  async (actorName) => {
+    const response = await axios.get(
+      `${API}?sort=title&order=ASC&limit=1000&actor=${encodeURIComponent(
+        actorName
+      )}`,
+      getAuthHeader()
+    );
+    return response.data?.data || [];
+  }
+);
+
 export const fetchMovieDetails = createAsyncThunk(
   "movies/fetchMovieDetails",
   async (id) => {
@@ -28,30 +42,73 @@ export const fetchMovieDetails = createAsyncThunk(
 export const deleteMovie = createAsyncThunk(
   "movies/deleteMovie",
   async (id, { dispatch }) => {
-    await axios.delete(`${API}/${id}`, getAuthHeader());
-    dispatch(fetchMovies());
-    return id;
+    try {
+      await axios.delete(`${API}/${id}`, getAuthHeader());
+      dispatch(fetchMovies());
+      dispatch(
+        showNotification({
+          type: "warning",
+          message: "Movie deleted successfully!",
+          duration: 3000,
+        })
+      );
+      return id;
+    } catch (error) {
+      dispatch(
+        showNotification({
+          type: "error",
+          message: "Failed to delete movie",
+          duration: 3000,
+        })
+      );
+      throw error;
+    }
   }
 );
 
 export const addMovie = createAsyncThunk(
   "movies/addMovie",
   async (movieData, { dispatch }) => {
-    const actorList = movieData.actors
-      .split(",")
-      .map((a) => a.trim())
-      .filter((a) => a.length > 0);
+    try {
+      const actorList = movieData.actors
+        .split(",")
+        .map((a) => a.trim())
+        .filter((a) => a.length > 0);
 
-    const formattedData = {
-      title: movieData.title.trim(),
-      year: parseInt(movieData.year),
-      format: movieData.format.trim(),
-      actors: actorList,
-    };
+      const formattedData = {
+        title: movieData.title.trim(),
+        year: parseInt(movieData.year),
+        format: movieData.format.trim(),
+        actors: actorList,
+      };
 
-    await axios.post(API, formattedData, getAuthHeader());
-    dispatch(fetchMovies());
-    return formattedData;
+      const response = await axios.post(API, formattedData, getAuthHeader());
+
+      if (response.data.error) {
+        dispatch(
+          showNotification({
+            type: "error",
+            message: `Failed to add movie ${response.data.error.code}`,
+            duration: 3000,
+          })
+        );
+        console.log(response.data.error.fields.year);
+        throw new Error(response.data.error);
+      }
+
+      dispatch(fetchMovies());
+      dispatch(
+        showNotification({
+          type: "success",
+          message: "Added successfully a new film!",
+          duration: 3000,
+        })
+      );
+      return formattedData;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 );
 
@@ -59,6 +116,7 @@ const moviesSlice = createSlice({
   name: "movies",
   initialState: {
     list: [],
+    actorSearchResults: [],
     selectedMovie: null,
     search: "",
     newMovie: {
@@ -113,7 +171,10 @@ const moviesSlice = createSlice({
       .addCase(fetchMovieDetails.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
+      .addCase(fetchMoviesByActor.fulfilled, (state, action) => {
+      state.actorSearchResults = action.payload;
+    });
   },
 });
 
